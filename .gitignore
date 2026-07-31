@@ -1,0 +1,69 @@
+# =====================
+# Python
+# =====================
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python build files
+build/
+dist/
+*.egg-info/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+
+# =====================
+# React / Node
+# =====================
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Vite
+.vite/
+
+# Next.js (if applicable)
+.next/
+
+# Environment variables
+.env
+.env.*
+
+
+# =====================
+# Editors
+# =====================
+
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+
+# =====================
+# Logs
+# =====================
+
+*.log
