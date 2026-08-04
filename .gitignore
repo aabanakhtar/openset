@@ -4,7 +4,7 @@
 
 # Virtual environments
 .venv/
-backend/backed_venv/
+backend/backend_venv/
 env/
 ENV/
 
