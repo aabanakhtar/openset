@@ -1,40 +1,23 @@
 from fastapi import Depends, HTTPException, Query, FastAPI 
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session 
 import sqlalchemy
-from sqlmodel import Field, Session, SQLModel, create_engine, select
-from sqlalchemy.orm import sessionmaker, Session 
-from sqlalchemy.exc import IntegrityError
-from pydantic import BaseModel
+from sqlmodel import select
 from contextlib import asynccontextmanager
 from typing import Annotated
+import bcrypt
+
+from db import *
+from models import (
+    User, 
+    UserCreate, 
+    UserPreview
+)
 
 production = False
-
 allowed_origins = ["http://localhost:3000"]
-
-
 if production: 
     allowed_origins = []
-
-
-sqlite_file_name = "test.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-
-# use the same sqlite db in different threads (one request can use more than one thread)
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
-
-class User(SQLModel, table=True):
-    email: str = Field(primary_key=True, unique=True)
-    password_hash: str = Field() 
-
-def create_db_and_tables(): 
-    SQLModel.metadata.create_all(engine)
-
-def get_session_lazy():
-    with Session(engine) as session:
-        yield session
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -55,21 +38,37 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+def hash_user_pwd(pwd: str) -> str:
+    bytes = pwd.encode()
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(bytes, salt)
+    return hashed.decode()
+
 @app.post("/users")
-def create_user(user: User, session: SessionDep) -> User:
-    try: 
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-        return user
-    except IntegrityError:
-        session.rollback()
-        raise HTTPException(409, detail="Couldn't create user")
+def create_user(user_data: UserCreate, session: SessionDep) -> UserPreview:
+    existing_user = session.exec(
+        select(User).where(User.email == user_data.email)
+    ).first()
+
+    if existing_user: 
+        raise HTTPException(status_code=409, detail="User already found!")
+
+    user = User(
+        email=user_data.email, 
+        password_hash=hash_user_pwd(user_data.pwd)
+    )
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return UserPreview(email=user.email, id=user.id)
 
 @app.get("/users")
-def get_users(session: SessionDep,) -> list[User]:
-    users = session.execute(select(User)).scalars()
-    return users
+def get_users(session: SessionDep) -> list[UserPreview]:
+    users = session.exec(select(User)).all()
+    return [
+        UserPreview(email=user.email, id=user.id) for user in users
+    ]
 
 
 @app.get("/health")
