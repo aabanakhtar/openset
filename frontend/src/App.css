@@ -1,0 +1,7 @@
+/* pico handles everything */
+
+.hero {
+  padding-block: 6rem 4rem; 
+  padding-inline: 1.5rem; 
+  text-align: center;
+}
