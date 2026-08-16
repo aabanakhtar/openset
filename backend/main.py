@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from db import (
     create_db_and_tables
 ) 
-from models import (
+from models.users import (
     User, 
     UserCreate, 
     UserPreview

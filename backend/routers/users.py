@@ -1,16 +1,7 @@
-from fastapi import (
-    APIRouter
-)
-from db import (
-    SessionDep
-)
-from models import (
-    User, 
-    UserPreview
-)
-from sqlmodel import (
-    select
-)
+from fastapi import APIRouter
+from models.users import User, UserPreview
+from sqlmodel import select
+import db
 
 router = APIRouter(
     prefix="/users",
@@ -18,7 +9,7 @@ router = APIRouter(
 )
 
 @router.get("/list")
-def get_users(session: SessionDep) -> list[UserPreview]:
+def get_users(session: db.SessionDep) -> list[UserPreview]:
     users = session.exec(select(User)).all()
     return [
         UserPreview(email=user.email, id=user.id) for user in users
