@@ -10,6 +10,7 @@ router = APIRouter(
 
 @router.get("/list")
 def get_users(session: db.SessionDep) -> list[UserPreview]:
+    '''List of all users'''
     users = session.exec(select(User)).all()
     return [
         UserPreview(email=user.email, id=user.id) for user in users
