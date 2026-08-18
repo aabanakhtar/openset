@@ -19,7 +19,7 @@ from routers import (
 
 
 production = False
-allowed_origins = ["http://localhost:3000"]
+allowed_origins = ["http://localhost:5173"]
 if production: 
     allowed_origins = []
 

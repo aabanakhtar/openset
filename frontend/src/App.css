@@ -5,3 +5,8 @@
   padding-inline: 1.5rem; 
   text-align: center;
 }
+
+.logo {
+  height: 5rem;
+  width: auto;
+}

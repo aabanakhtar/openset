@@ -42,7 +42,7 @@ def create_user(user_data: UserCreate, session: db.SessionDep) -> UserPreview:
 
     # If the user exists, it's not the one to make
     if existing_user: 
-        raise HTTPException(status_code=409, detail="User already found!")
+        raise HTTPException(status_code=409, detail="User already exists")
 
     # Create and commit user
     user = User(
