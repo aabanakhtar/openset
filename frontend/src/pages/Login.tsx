@@ -1,8 +1,12 @@
 
 import type { SubmitEvent } from "react"
 import axios from "axios";
+import api from "../API"
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+  // must be declared outside
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault(); // allows us to intercept the submission 
@@ -25,13 +29,16 @@ export default function LoginPage() {
 
     try {
       // the extra header tells fastapi that we're not using json (Oauth2 form specific)
-      const response = await axios.post("http://localhost:8000/auth/login", formData, {
+      const response = await api.post("http://localhost:8000/auth/login", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       });
 
-      console.log(response.data);
+      // store it
+      sessionStorage.setItem("access_token", response.data.access_token);
+      // go to dashboard
+      navigate("/dash")
     } catch (error: any) {
       console.error(error.response?.data)
     }
@@ -59,7 +66,7 @@ export default function LoginPage() {
           autoComplete="current-password"
           required
         />
-        <p>New? Create an account</p>
+        <p>New? <Link to="/signup">Create an account</Link></p>
         <button type="submit">
           Login
         </button>

@@ -5,8 +5,11 @@ import { Routes, Route, Link } from "react-router-dom";
 import { useState } from "react";
 
 import Login from "./pages/Login"
-import { Home } from "./pages/Home";
+import Home from "./pages/Home";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import { ProtectedRoute } from "./API";
+
 
 function NavHeader() {
   return (
@@ -26,16 +29,27 @@ function NavHeader() {
 }
 
 function App() {
-  const [authToken, setAuthToken] = useState("");
+  const isAuth = () => {
+    const tok = sessionStorage.getItem("access_token"); 
+    if (tok) {
+      return true;
+    } 
 
+    return false;
+  };
+
+  
   return (
     <div>
       <NavHeader/>
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />}/>
+        <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login/>} />
+        <Route element={<ProtectedRoute isAuth={isAuth} />}>
+          <Route path="/dash" element={<Dashboard />} /> 
+        </Route>
       </Routes>
     </div>
   );

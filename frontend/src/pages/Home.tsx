@@ -1,6 +1,6 @@
 import '../App.css'
 
-export function Home() {
+export default function Home() {
   return (
     <section className="hero">
       <div className="container">
