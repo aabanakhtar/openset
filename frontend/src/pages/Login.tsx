@@ -29,7 +29,7 @@ export default function LoginPage() {
 
     try {
       // the extra header tells fastapi that we're not using json (Oauth2 form specific)
-      const response = await api.post("http://localhost:8000/auth/login", formData, {
+      const response = await api.post("/auth/login", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },

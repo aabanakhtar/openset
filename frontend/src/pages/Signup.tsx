@@ -1,6 +1,34 @@
-
+import api from "../API.tsx"
 
 export default function Signup() {
+
+  // see login form for impl details
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+
+    const formEntries = new FormData(e.currentTarget); 
+
+    const username = formEntries.get("login"); 
+    const pwd_1 = formEntries.get("password"); 
+    const pwd_2 = formEntries.get("password_2"); 
+
+    if (pwd_1 !== pwd_2) {
+      // tell the user something wrong;
+
+      return;
+    }
+
+    try {
+      const response = await api.post("/auth/signup", {
+        'email': username, 
+        'pwd': pwd_1
+      });
+    } catch (error: any) {
+
+    }
+
+  };
+
   return (
     <div className="container">
       <h3>Create Account:</h3>
